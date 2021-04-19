@@ -180,15 +180,17 @@ console.log(newOrder3)
 
 function delFromOrder2(order, id) {
     const index = (isInOrder(id, order))
-
-    console.log(index)
-    if (index > -1 && order[index].amount > 1) {
+    if (index === -1) {
+        console.log('В заказе нет такого товара')
+    } else if (order[index].amount > 1) {
         order[index].amount -= 1
     } else {
         order.splice(index, 1)
     }
+
 }
 delFromOrder2(newOrder3, 195234)
+delFromOrder2(newOrder3, 100235)
 delFromOrder2(newOrder3, 100235)
 
 console.log(newOrder3)
