@@ -48,6 +48,7 @@ testNumToObj()
 Реализуйте такие объекты.
 Перенести функционал подсчета корзины на объектно-ориентированную базу.
 */
+console.log('___Task_2___')
 
 function Product(id, name, category, price) {
     this.id = id
@@ -56,7 +57,7 @@ function Product(id, name, category, price) {
     this.price = price
 }
 let product1 = new Product(195234, 'Бусы из турмалина', 'Бусы', 2800)
-let product2 = new Product(000235, 'Браслет из малахита', 'Браслеты', 800)
+let product2 = new Product(100235, 'Браслет из малахита', 'Браслеты', 800)
 let product3 = new Product(123652, 'Серебряное кольцо', 'Кольца', 3000)
 
 let newOrder1 = []
@@ -115,3 +116,90 @@ console.log(countOrderPrice(newOrder2))
  представляю, как работает взаимосвязь баз данных и фронтенд части сайта, 
  и что за что отвечает. Надеюсь, потом пойму))
  */
+
+/*UPD. 19.04 - я всё-таки решила реализовать немного другой подход, близкий 
+к тому, что мы проходили на курсе по базам данных. Получилось то, что ниже:*/
+
+console.log('___Task_2__updated___')
+
+// Создание нового товара
+
+function Product(id, name, category, price) {
+    this.id = id
+    this.name = name
+    this.category = category
+    this.price = price
+}
+
+// База данных товаров
+let products = []
+
+// добавление товара в базу данных
+
+products.push(new Product(195234, 'Бусы из турмалина', 'Бусы', 2800))
+products.push(new Product(100235, 'Браслет из малахита', 'Браслеты', 800))
+products.push(new Product(123652, 'Серебряное кольцо', 'Кольца', 3000))
+
+console.log(products)
+
+// создание нового заказа
+
+let newOrder3 = []
+
+// добавление товаров в заказ
+
+function isInOrder(id, order) {
+    return order.findIndex(product => product.id == id)
+}
+
+function addToOrder2(order, database, prod_id) {
+    const productIndex = database.findIndex(function(product) {
+        return product.id == prod_id
+    })
+    const index = (isInOrder(prod_id, order))
+    if (index != -1) {
+        order[index].amount += 1
+
+    } else {
+        order.push({
+            id: database[productIndex].id,
+            name: database[productIndex].name,
+            price: database[productIndex].price,
+            amount: 1
+        })
+    }
+}
+
+addToOrder2(newOrder3, products, 195234)
+addToOrder2(newOrder3, products, 195234)
+addToOrder2(newOrder3, products, 100235)
+
+console.log(newOrder3)
+
+// удаление товара из заказа
+
+function delFromOrder2(order, id) {
+    const index = (isInOrder(id, order))
+
+    console.log(index)
+    if (index > -1 && order[index].amount > 1) {
+        order[index].amount -= 1
+    } else {
+        order.splice(index, 1)
+    }
+}
+delFromOrder2(newOrder3, 195234)
+delFromOrder2(newOrder3, 100235)
+
+console.log(newOrder3)
+
+// подсчёт стоимости заказа
+
+function countOrderPrice2(array) {
+    let resultPrice = 0;
+    for (let product of array) {
+        resultPrice += product.price * product.amount
+    }
+    return resultPrice;
+}
+console.log(countOrderPrice2(newOrder3))
