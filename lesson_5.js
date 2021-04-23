@@ -152,7 +152,12 @@ function drawOrder() {
     </div>`
     $newOrder.insertAdjacentHTML('beforeend', html);
     newOrder.forEach((product) => drawOrderProduct(product))
-    const htmlEnd = `<div class="order-end">В корзине: ${amountOrderProducts(newOrder)} товаров на сумму ${countOrderPrice2(newOrder)} рублей</div>`
+    let htmlEnd
+    if (newOrder.length != 0) {
+        htmlEnd = `<div class="order-end">В корзине: ${amountOrderProducts(newOrder)} товаров на сумму ${countOrderPrice2(newOrder)} рублей</div>`
+    } else {
+        htmlEnd = `<div class="order-end">Корзина пуста</div>`
+    }
     $newOrder.insertAdjacentHTML('beforeend', htmlEnd);
 }
 
