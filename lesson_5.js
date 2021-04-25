@@ -13,102 +13,73 @@
 HTML-код должен содержать только div id=”catalog” без вложенного кода. Весь вид каталога генерируется JS.
 */
 
-//создание одного товара
 function Product(id, name, category, price) {
     this.id = id
     this.name = name
     this.category = category
     this.price = price
+    this._isInOrder = function(someArray = order) {
+        return someArray.findIndex(el => this.id === el.id)
+    }
+    this.addToOrder = function(someOrder = order) {
+        const index = this._isInOrder(someOrder)
+        if (index != -1) {
+            order[index].amount += 1
+
+        } else {
+            order.push(new OrderProduct(this.id, this.name, this.price))
+        }
+    }
+    this.delFromOrder = function(someOrder = order) {
+        const index = this._isInOrder(someOrder)
+        if (index === -1) {
+            console.log('В заказе нет такого товара')
+        } else if (someOrder[index].amount > 1) {
+            order[index].amount -= 1
+        } else {
+            order.splice(index, 1)
+        }
+
+    }
+}
+
+function OrderProduct(id, name, price) {
+    this.id = id
+    this.name = name
+    this.price = price
+    this.amount = 1
 }
 // База данных товаров
 let catalog = []
 
+// Корзина заказов
+let order = []
+
 // добавление товара в базу данных
-
-catalog.push(new Product(195234, 'Бусы из турмалина', 'Бусы', 2800))
-catalog.push(new Product(100235, 'Браслет из малахита', 'Браслеты', 800))
-catalog.push(new Product(123652, 'Серебряное кольцо', 'Кольца', 3000))
-
-console.log(catalog)
-
-// создание нового заказа
-
-let newOrder = []
+catalog.push(new Product(1, 'Бусы из турмалина', 'Бусы', 2800))
+catalog.push(new Product(2, 'Браслет из малахита', 'Браслеты', 800))
+catalog.push(new Product(3, 'Серебряное кольцо', 'Кольца', 3000))
 
 // добавление товаров в заказ
+catalog[catalog.findIndex(el => el.id === 1)].addToOrder()
+catalog[catalog.findIndex(el => el.id === 2)].addToOrder()
+catalog[catalog.findIndex(el => el.id === 2)].addToOrder()
 
-function isInOrder(id, array) {
-    return array.findIndex(product => product.id == id)
-}
-
-function addToOrder2(order, catalog, prod_id) {
-    const productIndex = (isInOrder(prod_id, catalog))
-    const index = (isInOrder(prod_id, order))
-    if (index != -1) {
-        order[index].amount += 1
-
-    } else {
-        order.push({
-            id: catalog[productIndex].id,
-            name: catalog[productIndex].name,
-            price: catalog[productIndex].price,
-            amount: 1
-        })
-    }
-}
-
-addToOrder2(newOrder, catalog, 195234)
-addToOrder2(newOrder, catalog, 195234)
-addToOrder2(newOrder, catalog, 100235)
-
-console.log(newOrder)
-
-// удаление товара из заказа
-
-function delFromOrder2(order, id) {
-    const index = (isInOrder(id, order))
-    if (index === -1) {
-        console.log('В заказе нет такого товара')
-    } else if (order[index].amount > 1) {
-        order[index].amount -= 1
-    } else {
-        order.splice(index, 1)
-    }
-
-}
-
-
-// подсчёт стоимости товара
-
-function orderProductCost(product) {
-    let resultProductCost = 0;
-    resultProductCost = product.amount * product.price
-    return resultProductCost;
-}
-
-
-// подсчёт стоимости заказа
-
-function countOrderPrice2(array) {
-    let resultOrderCost = 0;
-    for (let product of array) {
-        resultOrderCost += product.price * product.amount
-    }
-    return resultOrderCost;
-}
-
-// подсчёт количества товаров
-
-function amountOrderProducts(array) {
-    let resultAmount = 0
-    for (let product of array) {
-        resultAmount += product.amount
-    }
-    return resultAmount
-}
-
+// удаление товаров из заказа
+catalog[catalog.findIndex(el => el.id === 1)].delFromOrder()
+catalog[catalog.findIndex(el => el.id === 2)].delFromOrder()
 
 // вывод списка товаров
+function drawProduct(product) {
+    const $catalog = document.querySelector('#catalog');
+    const html = `<div id="product-${product.id}" class="product">
+                <p class="product-category">${product.category}</p>
+        <p class="product-name">${product.name}</p>
+        <p class="product-price">${product.price}</p>
+        <button data-id="${product.id}" class="product-btn">+</button>
+    </div>`
+    $catalog.insertAdjacentHTML('beforeend', html);
+}
 
 function drawCatalog() {
     const $catalog = document.querySelector('#catalog');
@@ -124,22 +95,9 @@ function drawCatalog() {
     catalog.forEach((product) => drawProduct(product))
 }
 
-function drawProduct(product) {
-    const $catalog = document.querySelector('#catalog');
-    const html = `<div id="product-${product.id}" class="product">
-                <p class="product-category">${product.category}</p>
-        <p class="product-name">${product.name}</p>
-        <p class="product-price">${product.price}</p>
-        <button data-id="${product.id}" class="product-btn">+</button>
-    </div>`
-    $catalog.insertAdjacentHTML('beforeend', html);
-
-}
-
 drawCatalog()
 
 // вывод заказа
-
 function drawOrder() {
     const $newOrder = document.querySelector('#order');
     $newOrder.textContent = '';
@@ -151,10 +109,16 @@ function drawOrder() {
         <p class="order-product-cost">Стоимость</p>
     </div>`
     $newOrder.insertAdjacentHTML('beforeend', html);
-    newOrder.forEach((product) => drawOrderProduct(product))
+    order.forEach((product) => drawOrderProduct(product))
     let htmlEnd
-    if (newOrder.length != 0) {
-        htmlEnd = `<div class="order-end">В корзине: ${amountOrderProducts(newOrder)} товаров на сумму ${countOrderPrice2(newOrder)} рублей</div>`
+    if (order.length != 0) {
+        let amount = 0
+        let cost = 0
+        for (let product of order) {
+            amount += product.amount
+            cost += product.price * product.amount
+        }
+        htmlEnd = `<div class="order-end">В корзине: ${amount} товаров на сумму ${cost} рублей</div>`
     } else {
         htmlEnd = `<div class="order-end">Корзина пуста</div>`
     }
@@ -167,7 +131,7 @@ function drawOrderProduct(product) {
         <p class="order-product-name">${product.name}</p>
         <p class="order-product-price">${product.price}</p>
         <p class="order-product-amount">${product.amount}</p>
-        <p class="order-product-cost">${orderProductCost(product)}</p>
+        <p class="order-product-cost">${product.amount * product.price}</p>
     </div>`
     $newOrder.insertAdjacentHTML('beforeend', html);
 
