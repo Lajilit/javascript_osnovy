@@ -38,7 +38,6 @@ function Product(id, name, category, price) {
         } else {
             order.splice(index, 1)
         }
-
     }
 }
 
