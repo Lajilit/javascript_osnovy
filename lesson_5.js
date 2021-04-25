@@ -25,7 +25,6 @@ function Product(id, name, category, price) {
         const index = this._isInOrder(someOrder)
         if (index != -1) {
             order[index].amount += 1
-
         } else {
             order.push(new OrderProduct(this.id, this.name, this.price))
         }
