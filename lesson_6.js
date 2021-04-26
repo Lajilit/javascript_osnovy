@@ -115,7 +115,7 @@ function drawOrderProduct(product) {
         <div class="amount">
         <button id="del-from-order" data-id="${product.id}" class="order-btn">-</button>
         <p>${product.amount}</p>
-        <button data-id="${product.id}" class="order-btn">+</button>
+        <button id="add-to-order" data-id="${product.id}" class="order-btn">+</button>
         </div>
         <p class="cost">${product.amount * product.price}</p>
         <button id="del-all" data-id="${product.id}" class="del-all">Х</button>
@@ -137,7 +137,7 @@ $catalogAddToOrder.addEventListener('click', function(e) {
         }
         drawOrder()
     })
-    // удаление товаров из заказа
+    // добавление и удаление товаров из заказа
 
 const $ChangeOrder = document.querySelector('#order')
 
