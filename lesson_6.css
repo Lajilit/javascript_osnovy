@@ -8,7 +8,7 @@ body {
 }
 
 .container {
-    max-width: 1140px;
+    max-width: 900px;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
@@ -16,68 +16,156 @@ body {
 }
 
 #catalog {
-    padding: 10px;
-    border: 1px solid darkblue;
+    padding: 30px;
+    text-align: center;
     background-color: cornflowerblue;
 }
 
 .heading {
     font-size: 30px;
-    line-height: 46px;
-    letter-spacing: 0.05em;
+    line-height: 41px;
+    font-style: normal;
+    font-weight: bold;
     text-align: center;
+    padding-bottom: 60px;
+}
+
+.products {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+.product {
+    width: 30%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.image {
+    width: 100px;
+    height: 100px;
+}
+
+.product-name {
+    font-weight: bold;
+}
+
+.product-price {
+    font-size: 24px;
+    font-weight: bolder;
 }
 
 #order {
     background-color: cyan;
-    border: 1px solid darkblue;
-    padding: 10px;
+    padding: 30px;
+    text-align: center;
 }
 
-.product {
+.order-heading {
+    font-weight: bold;
+    display: flex;
+}
+
+.order-product {
+    display: flex;
+}
+
+.name {
+    width: 55%;
+    text-align: left;
+}
+
+.price {
+    width: 10%;
+}
+
+.amount {
+    width: 15%;
     display: flex;
     justify-content: space-around;
 }
 
-.product-heading {
-    font-weight: bold;
+.cost {
+    width: 10%;
 }
 
-.product-category {
+.del-all {
+    width: 3%;
+    color: red;
+}
+
+.order-btn {
     width: 15%;
-}
-
-.product-name {
-    width: 60%;
-}
-
-.product-price {
-    width: 15%;
-}
-
-.product-btn {
-    width: 10%;
-}
-
-.order-product-name {
-    width: 70%;
-}
-
-.order-product-price {
-    width: 10%;
-}
-
-.order-product-amount {
-    width: 10%;
-}
-
-.order-product-cost {
-    width: 10%;
 }
 
 .order-end {
-    font-size: 24px;
+    font-size: 20px;
     line-height: 46px;
     letter-spacing: 0.05em;
     text-align: center;
+    padding-top: 20px;
+}
+
+.img-modal {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    overflow: hidden;
+    overflow-y: auto;
+    background-color: gray;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+    /* см. ниже */
+    align-items: center;
+    z-index: 99;
+    padding: 30px 0;
+    max-height: 100vh;
+}
+
+.img-modal__window {
+    background: #fff;
+    /* Установим по умолчанию ширину 600px
+    но она будет не больше ширины браузера */
+    margin: auto;
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    align-items: center;
+}
+
+.left {
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.img-modal__left {
+    width: 50px;
+}
+
+.modal-img {
+    width: 600px;
+}
+
+.right {
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.img-modal__right {
+    width: 50px;
+}
+
+.img-modal__close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-size: 30px;
 }
