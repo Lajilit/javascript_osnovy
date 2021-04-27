@@ -55,6 +55,9 @@ let order = []
 catalog.push(new Product(1, 'Бусы из турмалина', ['image_01', 'image_02'], 2800))
 catalog.push(new Product(2, 'Браслет из малахита', ['image_03', 'image_04'], 800))
 catalog.push(new Product(3, 'Серебряное кольцо', ['image_05', 'image_06'], 3000))
+catalog.push(new Product(4, 'Комплект из горного хрусталя и шунгита', ['image_07', 'image_08', 'image_14', 'image_15'], 5000))
+catalog.push(new Product(5, 'Браслет из турмалина', ['image_12', 'image_13'], 1000))
+catalog.push(new Product(6, 'Комплект из барочного и майорского жемчуга', ['image_09', 'image_10', 'image_11'], 8000))
 
 function drawCatalog() {
     const $catalog = document.querySelector('#catalog');
@@ -66,11 +69,10 @@ function drawCatalog() {
 
 function drawProduct(product) {
     const $products = document.querySelector('.products');
-    console.log($products)
     const html = `<div id="product-${product.id}"  class="product">
         <img class="image" data-id="${product.id}" src="img/${product.imagesList[0]}.jpg" alt="фото">    
         <p class="product-name">${product.name}</p>
-        <p class="product-price">${product.price}</p>
+        <p class="product-price">${product.price} руб.</p>
         <button id="cat-button" data-id="${product.id}" class="product-btn">Купить</button></div>`
     $products.insertAdjacentHTML('beforeend', html);
 }
@@ -180,13 +182,33 @@ $bigPhoto.addEventListener('click', function(e) {
     product = catalog[catalog.findIndex(el => el.id == e.target.dataset.id)]
     if (e.target.tagName === 'IMG') {
         modalImg(product)
-    }
-    const $closeClick = document.querySelector('.img-modal__close')
-    const $windowImg = document.querySelector('#img-modal')
+        const $closeClick = document.querySelector('.img-modal__close')
+        const $windowImg = document.querySelector('#img-modal')
+        let $bigImage = document.querySelector('.modal-img')
 
-    $closeClick.addEventListener('click', function(e) {
-        $windowImg.remove()
-    })
+        $closeClick.addEventListener('click', function(e) {
+            $windowImg.remove()
+        })
+        const $leftClick = document.querySelector('.left')
+        $leftClick.addEventListener('click', function(e) {
+            if (idxPhoto == 0) {
+                idxPhoto = product.imagesList.length - 1
+            } else {
+                idxPhoto--
+            }
+            $bigImage.setAttribute('src', `img/${product.imagesList[idxPhoto]}.jpg`)
+        })
+        const $rightClick = document.querySelector('.right')
+        $rightClick.addEventListener('click', function(e) {
+            if (idxPhoto == product.imagesList.length - 1) {
+                idxPhoto = 0
+            } else {
+                idxPhoto++
+            }
+            $bigImage.setAttribute('src', `img/${product.imagesList[idxPhoto]}.jpg`)
+        })
+    }
+
 
 })
 

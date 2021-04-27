@@ -42,6 +42,7 @@ body {
     flex-direction: column;
     align-items: center;
     text-align: center;
+    margin: 20px;
 }
 
 .image {
@@ -150,7 +151,8 @@ body {
 }
 
 .modal-img {
-    width: 600px;
+    max-width: 600px;
+    max-height: 90vh;
 }
 
 .right {
