@@ -234,7 +234,6 @@ $catalog.addEventListener('click', function(e) {
 // перелистывание окошек заказ - адрес / комментарий
 
 $order.addEventListener('click', function(e) {
-    /*     const $nextOrder = document.querySelector('#next-order') */
     if (e.target.id === "next-order") {
         $catalog.style.display = 'none'
         $order.style.display = 'none'
