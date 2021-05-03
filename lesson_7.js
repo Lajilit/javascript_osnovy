@@ -13,6 +13,12 @@
 * Убрать границы поля: пересекая их, змейка должна появляться с противоположной стороны.
 * Для задачи со звездочкой из шестого урока реализовать функционал переключения между картинками по стрелкам на клавиатуре.
  */
+const $body = document.querySelector('body')
+const $catalog = document.querySelector('#catalog')
+const $order = document.querySelector('#order')
+const $adress = document.querySelector('#adress')
+const $comment = document.querySelector('#comment')
+
 
 function Product(id, name, images, price) {
     this.id = id
@@ -86,9 +92,8 @@ drawCatalog()
 
 // вывод заказа
 function drawOrder() {
-    const $newOrder = document.querySelector('#order');
-    $newOrder.textContent = '';
-    $newOrder.insertAdjacentHTML('beforeend', '<h1 class="heading">  Заказ </h1>')
+    $order.textContent = '';
+    $order.insertAdjacentHTML('beforeend', '<h1 class="heading">Заказ</h1>')
     const html = `<div class="order-heading">
         <p class="name">Наименование товара</p>
         <p class="price">Цена</p>
@@ -96,7 +101,7 @@ function drawOrder() {
         <p class="cost">Стоимость</p>
         <p class="del-all"></p>
     </div>`
-    $newOrder.insertAdjacentHTML('beforeend', html);
+    $order.insertAdjacentHTML('beforeend', html);
     order.forEach((product) => drawOrderProduct(product))
     let htmlEnd
     if (order.length != 0) {
@@ -110,11 +115,12 @@ function drawOrder() {
     } else {
         htmlEnd = `<div class="order-end">Корзина пуста</div>`
     }
-    $newOrder.insertAdjacentHTML('beforeend', htmlEnd);
+    let nextButton = `<div id="next-order" class="next">Next</div>`
+    $order.insertAdjacentHTML('beforeend', htmlEnd);
+    $order.insertAdjacentHTML('beforeend', nextButton);
 }
 
 function drawOrderProduct(product) {
-    const $newOrder = document.querySelector('#order');
     const html = `<div id="order-product-${product.id}" class="order-product">
         <p class="name">${product.name}</p>
         <p class="price">${product.price}</p>
@@ -128,27 +134,24 @@ function drawOrderProduct(product) {
         <button id="del-all" data-id="${product.id}" class="del-all">Х</button>
 
     </div>`
-    $newOrder.insertAdjacentHTML('beforeend', html)
+    $order.insertAdjacentHTML('beforeend', html)
 }
 
 drawOrder()
 
 // добавление товаров в заказ
 
-const $catalogAddToOrder = document.querySelector('#catalog')
+$catalog.addEventListener('click', function(e) {
+    product = catalog[catalog.findIndex(el => el.id == e.target.dataset.id)]
+    if (e.target.tagName === 'BUTTON') {
+        addToOrder(product)
+    }
+    drawOrder()
+})
 
-$catalogAddToOrder.addEventListener('click', function(e) {
-        product = catalog[catalog.findIndex(el => el.id == e.target.dataset.id)]
-        if (e.target.tagName === 'BUTTON') {
-            addToOrder(product)
-        }
-        drawOrder()
-    })
-    // добавление и удаление товаров из заказа
+// добавление и удаление товаров из заказа
 
-const $ChangeOrder = document.querySelector('#order')
-
-$ChangeOrder.addEventListener('click', function(e) {
+$order.addEventListener('click', function(e) {
     product = catalog[catalog.findIndex(el => el.id == e.target.dataset.id)]
     if (e.target.tagName === 'BUTTON' && e.target.id == 'add-to-order') {
         addToOrder(product)
@@ -167,7 +170,9 @@ function modalImg(product, idx = 0) {
     const htmlModal = `<div class="img-modal" id="img-modal">
     <div class="img-modal__window">
         <p class="img-modal__close">X</p>
-        <div class="left"><img class="img-modal__left" src=img/left.png alt="предыдущее фото"></img>
+        <div class="left">
+        <img class="img-modal__left" src=img/left.png alt="предыдущее фото">
+        </img>
         </div>
         <img class="modal-img" src=img/${product.imagesList[idx]}.jpg alt="фото товара" />
         <div class="right"><img class="img-modal__right" src=img/right.png alt="следующее фото"></img>
@@ -175,48 +180,70 @@ function modalImg(product, idx = 0) {
     </div>
     </div>`
     $body.insertAdjacentHTML('beforeend', htmlModal)
-
 }
 
-const $bigPhoto = document.querySelector('#catalog')
-const $body = document.querySelector('body')
-let idxPhoto = 0
-
-
-$bigPhoto.addEventListener('click', function(e) {
+$catalog.addEventListener('click', function(e) {
     product = catalog[catalog.findIndex(el => el.id == e.target.dataset.id)]
     if (e.target.tagName === 'IMG') {
         modalImg(product)
         const $closeClick = document.querySelector('.img-modal__close')
         const $windowImg = document.querySelector('#img-modal')
-        let $bigImage = document.querySelector('.modal-img')
+        const $leftClick = document.querySelector('.left')
+        const $rightClick = document.querySelector('.right')
+        const $bigImage = document.querySelector('.modal-img')
 
         $closeClick.addEventListener('click', function(e) {
             $windowImg.remove()
         })
-        const $leftClick = document.querySelector('.left')
+        let idxPhoto = 0
+        const nextPhoto = function(direction) {
+            if (direction === 'left') {
+                if (idxPhoto == 0) {
+                    idxPhoto = product.imagesList.length - 1
+                } else {
+                    idxPhoto--
+                }
+            } else if (direction === 'right') {
+                if (idxPhoto == product.imagesList.length - 1) {
+                    idxPhoto = 0
+                } else {
+                    idxPhoto++
+                }
+            }
+            $bigImage.setAttribute('src',
+                `img/${product.imagesList[idxPhoto]}.jpg`)
+        }
         $leftClick.addEventListener('click', function(e) {
-            if (idxPhoto == 0) {
-                idxPhoto = product.imagesList.length - 1
-            } else {
-                idxPhoto--
-            }
-            $bigImage.setAttribute('src', `img/${product.imagesList[idxPhoto]}.jpg`)
+            nextPhoto('left')
         })
-        const $rightClick = document.querySelector('.right')
         $rightClick.addEventListener('click', function(e) {
-            if (idxPhoto == product.imagesList.length - 1) {
-                idxPhoto = 0
-            } else {
-                idxPhoto++
+            nextPhoto('right')
+        })
+        document.addEventListener('keydown', function(e) {
+            if (e.key === "ArrowLeft") {
+                nextPhoto('left')
+            } else if (e.key === "ArrowRight") {
+                nextPhoto('right')
             }
-            $bigImage.setAttribute('src', `img/${product.imagesList[idxPhoto]}.jpg`)
+        })
+    }
+})
+
+// перелистывание окошек заказ - адрес / комментарий
+
+
+
+$order.addEventListener('click', function(e) {
+    /*     const $nextOrder = document.querySelector('#next-order') */
+    if (e.target.id === "next-order") {
+        $catalog.style.display = 'none'
+        $order.style.display = 'none'
+        $adress.setAttribute('style', 'display: block')
+        const $nextAdress = document.querySelector('#next-adress')
+        $nextAdress.addEventListener('click', function(e) {
+            $adress.style.display = 'none'
+            $comment.setAttribute('style', 'display: block')
         })
     }
 
-
 })
-
-/* На текущий момент можно открыть и закрыть модальное окно. Листать между несколькими фотографиями пока не получается, но я доделаю
-
-UPD. Доделала)*/
