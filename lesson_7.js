@@ -244,5 +244,4 @@ $order.addEventListener('click', function(e) {
             $comment.setAttribute('style', 'display: block')
         })
     }
-
 })
